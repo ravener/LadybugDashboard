@@ -27,7 +27,7 @@ router.post("/", async(req, res) => {
   });
   const id = Date.now().toString(36);
   await req.app.db.query("INSERT INTO pastebin (id, content) VALUES ($1, $2)", [
-    id, req.body.content
+    id, req.body.content.trim()
   ]);
   return res.redirect(`/pastebin/${id}`);
 });
