@@ -32,4 +32,16 @@ router.post("/", async(req, res) => {
   return res.redirect(`/pastebin/${id}`);
 });
 
+router.post("/json", async(req, res) => {
+  const auth = req.get("Authorization");
+  if(!auth || auth !== req.app.config.pastebin) return res.status(401).json({ message: "Unauthorized" });
+  const { content } = req.body;
+  if(!content) return res.status(400).json({ message: "Content Missing" });
+  const id = Date.now().toString(36);
+  await req.app.db.query("INSERT INTO pastebin (id, content) VALUES ($1, $2)", [
+    id, content.trim()
+  ]);
+  return res.json({ id, url: `https://itsladybug.ml/pastebin/${id}` });
+});
+
 module.exports = router;
