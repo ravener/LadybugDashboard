@@ -1,0 +1,10 @@
+{
+  "postgresql": {
+    "password": "youshallnotpass",
+    "user": "ladybug",
+    "database": "ladybug"
+  },
+  "session": {
+    "secret": "Secret"
+  }
+}
