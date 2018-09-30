@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const mountRoutes = require("./routes");
 const config = require("./config.json");
 const session = require("express-session");
 // const debug = require("debug")("ladybug:main");
@@ -24,6 +25,8 @@ app.use(session({
   resave: false,
   secret: config.session.secret
 }));
+
+mountRoutes(app);
 
 app.get("/", (req, res) => {
   res.render("index.ejs");

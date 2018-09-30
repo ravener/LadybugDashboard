@@ -6,5 +6,6 @@
   },
   "session": {
     "secret": "Secret"
-  }
+  },
+  "pastebin": "password"
 }
