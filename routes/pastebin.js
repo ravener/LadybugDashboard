@@ -1,4 +1,5 @@
 const Router = require("express-promise-router");
+const { extname } = require("path");
 
 const router = new Router();
 
@@ -11,11 +12,14 @@ router.get("/:id", async(req, res) => {
   if(!id) return res.status(400).render("error.ejs", {
     message: "ID must be provided"
   });
-  const { rows } = await req.app.db.query("SELECT content FROM pastebin WHERE id = $1", [id]);
+  const ext = extname(id).slice(1);
+  let name = id;
+  if(ext) name = name.substring(0, name.length - ext.length - 1);
+  const { rows } = await req.app.db.query("SELECT content FROM pastebin WHERE id = $1", [name]);
   if(!rows.length) return res.status(404).render("error.ejs", {
     message: "Could not find the specified pastebin"
   });
-  return res.render("paste.ejs", { content: rows[0].content });
+  return res.render("paste.ejs", { content: rows[0].content, lang: ext || "js" });
 });
 
 router.post("/", async(req, res) => {
