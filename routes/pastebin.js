@@ -26,8 +26,8 @@ router.post("/", async(req, res) => {
   if(!req.body.password || req.body.password !== req.app.config.pastebin) return res.status(401).render("error.ejs", {
     message: "You are not allowed to do this (Invalid Password)"
   });
-  if(!req.body.content) return res.status(400).render("error.ejs", {
-    message: "Missing content"
+  if(!req.body.content || typeof req.body.content !== "string") return res.status(400).render("error.ejs", {
+    message: "Missing content or is not a string"
   });
   const id = Date.now().toString(36);
   await req.app.db.query("INSERT INTO pastebin (id, content) VALUES ($1, $2)", [
@@ -40,7 +40,7 @@ router.post("/json", async(req, res) => {
   const auth = req.get("Authorization");
   if(!auth || auth !== req.app.config.pastebin) return res.status(401).json({ message: "Unauthorized" });
   const { content } = req.body;
-  if(!content) return res.status(400).json({ message: "Content Missing" });
+  if(!content || typeof content !== "string") return res.status(400).json({ message: "Content missing or not a string" });
   const id = Date.now().toString(36);
   await req.app.db.query("INSERT INTO pastebin (id, content) VALUES ($1, $2)", [
     id, content.trim()
