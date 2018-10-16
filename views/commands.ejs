@@ -9,7 +9,7 @@
     <%- include("partials/navbar") %>
     <h1>Commands</h1>
     <% commands.forEach(function(command) { %>
-      <div class="card" style="width: 18rem;">
+      <div align="center" class="card" style="width: 18rem;">
         <div class="card-body"> 
           <h5 class="card-title"><%= command.name %></h5>
           <h6 class="card-subtitle mb-2 text-muted">Aliases: <%= command.aliases.join(",") %></h6>
