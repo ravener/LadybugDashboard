@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Ladybug | Commands</title>
+    <%- include("partials/header") %>
+    <%- include("partials/meta", { description: "All commands we got!" }) %>
+    <%- include("partials/discord") %>
+  </head>
+  <body>
+    <%- include("partials/navbar") %>
+    <h1>Commands</h1>
+    <% commands.forEach(function(command) { %>
+      <div class="card" style="width: 18rem;">
+        <div class="card-body"> 
+          <h5 class="card-title"><%= command.name %></h5>
+          <h6 class="card-subtitle mb-2 text-muted">Aliases: <%= command.aliases.join(",") %></h6>
+          <p class="card-text"><%= command.description %></p>
+          <p class="card-text"><%= command.extendedHelp %></p>
+        </div>
+      </div>
+    <% }); %>
+    <%- include("partials/scripts") %>
+  </body>
+</html>

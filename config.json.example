@@ -7,5 +7,10 @@
   "session": {
     "secret": "Secret"
   },
+  "rethinkdb": {
+    "user": "ladybug",
+    "password": "",
+    "db": "ladybug"
+  },
   "pastebin": "password"
 }

@@ -15,24 +15,25 @@ router.get("/:id", async(req, res) => {
   const ext = extname(id).slice(1);
   let name = id;
   if(ext) name = name.substring(0, name.length - ext.length - 1);
-  const { rows } = await req.app.db.query("SELECT content FROM pastebin WHERE id = $1", [name]);
-  if(!rows.length) return res.status(404).render("error.ejs", {
+  const r = req.app.db;
+  const data = await r.table("pastebin").get(name).run();
+  if(!data) return res.status(404).render("error.ejs", {
     message: "Could not find the specified pastebin"
   });
-  return res.render("paste.ejs", { content: rows[0].content, lang: ext || "js" });
+  return res.render("paste.ejs", { content: data.content, lang: ext || "js" });
 });
 
 router.post("/", async(req, res) => {
   if(!req.body.password || req.body.password !== req.app.config.pastebin) return res.status(401).render("error.ejs", {
     message: "You are not allowed to do this (Invalid Password)"
   });
-  if(!req.body.content || typeof req.body.content !== "string") return res.status(400).render("error.ejs", {
+  const { content } = req.body;
+  if(!content || typeof content !== "string") return res.status(400).render("error.ejs", {
     message: "Missing content or is not a string"
   });
   const id = Date.now().toString(36);
-  await req.app.db.query("INSERT INTO pastebin (id, content) VALUES ($1, $2)", [
-    id, req.body.content.trim()
-  ]);
+  const r = req.app.db;
+  await r.table("pastebin").insert({ id, content: content.trim() }).run();
   return res.redirect(`/pastebin/${id}`);
 });
 
@@ -42,9 +43,8 @@ router.post("/json", async(req, res) => {
   const { content } = req.body;
   if(!content || typeof content !== "string") return res.status(400).json({ message: "Content missing or not a string" });
   const id = Date.now().toString(36);
-  await req.app.db.query("INSERT INTO pastebin (id, content) VALUES ($1, $2)", [
-    id, content.trim()
-  ]);
+  const r = req.app.db;
+  await r.table("pastebin").insert({ id, content: content.trim() }).run();
   return res.json({ id, url: `https://itsladybug.ml/pastebin/${id}` });
 });
 
