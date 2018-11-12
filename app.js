@@ -12,9 +12,11 @@ app.set("port", process.env.PORT || 4000);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 // app.use("/assets", express.static(path.join(__dirname, "assets")));
-const RethinkDB = require("rethinkdbdash");
+const { MongoClient } = require("mongodb");
 
-app.db = RethinkDB(config.rethinkdb);
+MongoClient.connect(config.mongodb)
+  .then((client) => client.db("ladybug"))
+  .then((db) => (app.db = db));
 app.config = config;
 
 app.use(logger("combined"));

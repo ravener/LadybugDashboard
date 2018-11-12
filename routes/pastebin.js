@@ -15,8 +15,8 @@ router.get("/:id", async(req, res) => {
   const ext = extname(id).slice(1);
   let name = id;
   if(ext) name = name.substring(0, name.length - ext.length - 1);
-  const r = req.app.db;
-  const data = await r.table("pastebin").get(name).run();
+  const db = req.app.db;
+  const data = await db.collection("pastebin").findOne({ id: name });
   if(!data) return res.status(404).render("error.ejs", {
     message: "Could not find the specified pastebin"
   });
@@ -32,8 +32,8 @@ router.post("/", async(req, res) => {
     message: "Missing content or is not a string"
   });
   const id = Date.now().toString(36);
-  const r = req.app.db;
-  await r.table("pastebin").insert({ id, content: content.trim() }).run();
+  const db = req.app.db;
+  await db.collection("pastebin").insertOne({ id, content: content.trim() });
   return res.redirect(`/pastebin/${id}`);
 });
 
@@ -43,8 +43,8 @@ router.post("/json", async(req, res) => {
   const { content } = req.body;
   if(!content || typeof content !== "string") return res.status(400).json({ message: "Content missing or not a string" });
   const id = Date.now().toString(36);
-  const r = req.app.db;
-  await r.table("pastebin").insert({ id, content: content.trim() }).run();
+  const db = req.app.db;
+  await db.collection("pastebin").insertOne({ id, content: content.trim() });
   return res.json({ id, url: `https://itsladybug.ml/pastebin/${id}` });
 });
 
