@@ -48,6 +48,11 @@ app.get("/invite", (req, res) => {
   res.redirect("https://discordapp.com/oauth2/authorize?client_id=397796982120382464&permissions=1345350758&scope=bot");
 });
 
+app.get("/repo/:name", (req, res) => {
+  const { name } = req.params;
+  return res.redirect(`https://github.com/pollen5/${name}`);
+});
+
 app.use((req, res, next) => { // eslint-disable-line no-unused-vars
   res.status(404).render("404.ejs");
 });
